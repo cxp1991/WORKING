@@ -1,0 +1,170 @@
+#include "rpi_pseudo.h"
+
+#define TAG "rpi_pseufo"
+
+static gboolean isRunning;
+
+void *rpi_pseudo_func (CustomData *data)
+{
+	// Create the nice agent
+		data->agent = libnice_create_NiceAgent_with_gstreamer ( video_for_peer_gathering_done,
+																data->context);
+		// Create a new stream with one component
+		data->stream_id = libnice_create_stream_id (data->agent);
+
+		// Init Gstreamer
+		_video_receive_init_gstreamer (data->agent,
+									   data->stream_id,
+									   data);
+
+		isForPeer = FALSE;
+		// Start gathering candidates
+		libnice_start_gather_candidate (data->agent,
+										data->stream_id,
+										data->context);
+
+		__android_log_print (ANDROID_LOG_INFO, "tutorial-3", "[video] agent = %d", data->agent);
+
+	//wait_peer_connect_to ();
+	//peer_shaking(data);
+}
+
+/**
+ * Wait peer connect to.
+ * Then get its name.
+ */
+static void wait_peer_connect_to ()
+{
+	char *header, *init, *dest, *data;
+	char buffer[181] = {0};
+	char receiver[181] = {0};
+
+	while((*video_receive_gathering_done) == FALSE)
+	{
+		usleep(10000);
+	}
+
+	isRunning = TRUE;
+
+	while (isRunning)
+	{
+		if (recv(global_socket, buffer, 181, 0))
+		{
+			/* Decode received data */
+			Base64Decode(buffer, receiver, BUFFFERLEN);
+			__android_log_print (ANDROID_LOG_INFO, TAG, "receiver = %s", receiver);
+			header = strtok(receiver, "$");
+			init   = strtok(NULL, "$");
+			dest   = strtok(NULL, "$");
+
+			/* Infomation packet */
+			if (!strcmp(header, "001"))
+			{
+				memset(peer_name, '\0', sizeof(peer_name));
+				strncpy (peer_name, init, strlen(init));
+				isRunning = FALSE;
+			}
+
+			memset(buffer, '\0', 181);
+			memset(receiver, '\0', 181);
+		}
+	}
+}
+
+/*
+ * Initialize gstreamer & ice shaking
+ */
+static void peer_shaking (CustomData *data)
+{
+	// Create the nice agent
+	data->agent = (NiceAgent *)libnice_create_NiceAgent_with_gstreamer (video_for_peer_gathering_done,
+																 data->context);
+
+	// Create a new stream with one component
+	data->stream_id = libnice_create_stream_id (data->agent);
+
+	/* Initialize Gstreamer */
+	//peer_init_gstreamer (data->agent,
+	//				 data->stream_id,
+	//				 data->video_receive_data);
+
+	/* Gathering candidate for peer */
+	isForPeer = TRUE;
+
+	/* Start gathering candidates */
+	libnice_start_gather_candidate (data->agent,
+									data->stream_id,
+									data->context);
+
+}
+
+static void peer_init_gstreamer (	NiceAgent *magent,
+									guint streamID,
+									CustomData *video_data)
+{
+	/*
+	 * Create nicesink element
+	 * */
+	GstElement *peer_queue, *nicesink, *tee, *filesink;
+	GstPadTemplate *tee_src_pad_template;
+	GstPad *tee_q2_pad;
+	GstPad *q2_pad;
+
+	// Initialize GStreamer
+  	gst_init (NULL, NULL);
+
+  	// Register gstreamer plugin libnice
+	gst_plugin_register_static (
+		GST_VERSION_MAJOR,
+		GST_VERSION_MINOR,
+		"nice",
+		"Interactive UDP connectivity establishment",
+		plugin_init, "0.1.4", "LGPL", "libnice",
+		"http://telepathy.freedesktop.org/wiki/", "");
+
+	// Create elements
+	nicesink = gst_element_factory_make ("nicesink", NULL);
+	peer_queue = gst_element_factory_make ("queue", NULL);
+
+	// Set element's properties
+	g_object_set (nicesink, "agent", magent, NULL);
+	g_object_set (nicesink, "stream", streamID, NULL);
+	g_object_set (nicesink, "component", 1, NULL);
+
+	/*
+	 * Add nicesink element into
+	 * Receive Video Pipeline
+	 * */
+	gst_element_set_state(video_data->pipeline, GST_STATE_PAUSED);
+	gst_bin_add_many( GST_BIN(video_data->pipeline), nicesink, peer_queue, NULL);
+	gst_element_link(peer_queue, nicesink);
+
+	if ( !(tee = gst_bin_get_by_name(GST_BIN(video_data->pipeline), "tee")))
+	{
+		g_critical("Couldn't get tee");
+	}
+
+	if( (tee_src_pad_template = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (tee), "src%d")) == NULL ||
+		(tee_q2_pad = gst_element_request_pad (tee, tee_src_pad_template, NULL, NULL)) == NULL ||
+		(q2_pad = gst_element_get_static_pad (peer_queue, "sink")) == NULL)
+	{
+		g_critical("Failed to get pads!");
+	}
+
+	/* Link the tee to the queue 1 */
+	GstPadLinkReturn retv;
+	if ((retv = gst_pad_link (tee_q2_pad, q2_pad)) != GST_PAD_LINK_OK )
+	{
+		g_critical("tee_q1 = %d, q1_pad = %d", tee_q2_pad, q2_pad);
+		g_critical("ret = %d", retv);
+		g_critical ("Tee for q1 could not be linked.\n");
+		//gst_object_unref (pipeline);
+		return;
+	}
+
+	gst_object_unref (q2_pad);
+
+	gst_element_set_state( video_data->pipeline, GST_STATE_PLAYING );
+
+}
+

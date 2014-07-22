@@ -1,0 +1,15 @@
+
+**** Clean-only build of configuration Default for project Rpi ****
+
+make clean 
+rm  Main.o Connect_Server/Connect_Server.o P2P_Stream/P2P_Stream.o Rpi_Setup/Rpi_Setup.o Utils/base64.o Uart/Uart.o rpi
+rm: cannot remove `Main.o': No such file or directory
+rm: cannot remove `Connect_Server/Connect_Server.o': No such file or directory
+rm: cannot remove `P2P_Stream/P2P_Stream.o': No such file or directory
+rm: cannot remove `Rpi_Setup/Rpi_Setup.o': No such file or directory
+rm: cannot remove `Utils/base64.o': No such file or directory
+rm: cannot remove `Uart/Uart.o': No such file or directory
+rm: cannot remove `rpi': No such file or directory
+make: *** [clean] Error 1
+
+**** Build Finished ****

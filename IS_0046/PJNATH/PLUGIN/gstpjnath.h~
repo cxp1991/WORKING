@@ -1,0 +1,4 @@
+#include "gstpjnathsink.h"
+#include "gstpjnathsrc.h"
+
+gboolean plugin_init (GstPlugin *plugin)

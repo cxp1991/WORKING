@@ -1,0 +1,3 @@
+#include "stream.h"
+
+void *rpi_pseudo_func (GST_CUSTOM_DATA *data)

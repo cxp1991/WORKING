@@ -1,0 +1,352 @@
+#include "gstpjnathsink.h"
+
+
+GST_DEBUG_CATEGORY_STATIC (pjnathsink_debug);
+#define GST_CAT_DEFAULT pjnathsink_debug
+
+static GstFlowReturn
+gst_pjnath_sink_render (
+  GstBaseSink *basesink,
+  GstBuffer *buffer);
+
+static void
+gst_pjnath_sink_set_property (
+  GObject *object,
+  guint prop_id,
+  const GValue *value,
+  GParamSpec *pspec);
+
+static void
+gst_pjnath_sink_get_property (
+  GObject *object,
+  guint prop_id,
+  GValue *value,
+  GParamSpec *pspec);
+
+static void
+gst_pjnath_sink_dispose (GObject *object);
+
+static GstStateChangeReturn
+gst_pjnath_sink_change_state (
+    GstElement * element,
+    GstStateChange transition);
+
+static GstStaticPadTemplate gst_pjnath_sink_sink_template =
+GST_STATIC_PAD_TEMPLATE (
+    "sink",
+    GST_PAD_SINK,
+    GST_PAD_ALWAYS,
+    GST_STATIC_CAPS_ANY);
+
+G_DEFINE_TYPE (GstPjnathSink, gst_pjnath_sink, GST_TYPE_BASE_SINK);
+
+enum
+{
+  PROP_INSTANCE = 1,
+  PROP_COMPONENT,
+  PROP_ADDRESS,
+  PROP_POOL
+};
+
+static pj_thread_t *thread_handler;
+static pj_thread_desc rtpdesc;
+
+static void
+gst_pjnath_sink_class_init (GstPjnathSinkClass *klass)
+{
+  printf ("gst_pjnath_sink_class_init\n");
+
+  GstBaseSinkClass *gstbasesink_class;
+  GstElementClass *gstelement_class;
+  GObjectClass *gobject_class;
+
+  GST_DEBUG_CATEGORY_INIT (pjnathsink_debug, "pjnathsink",
+      0, "libpjnath sink");
+
+  gstbasesink_class = (GstBaseSinkClass *) klass;
+  gstbasesink_class->render = GST_DEBUG_FUNCPTR (gst_pjnath_sink_render);
+
+  gobject_class = (GObjectClass *) klass;
+  gobject_class->set_property = gst_pjnath_sink_set_property;
+  gobject_class->get_property = gst_pjnath_sink_get_property;
+  gobject_class->dispose = gst_pjnath_sink_dispose;
+
+  gstelement_class = (GstElementClass *) klass;
+  gstelement_class->change_state = gst_pjnath_sink_change_state;
+
+  gst_element_class_add_pad_template (gstelement_class,
+      gst_static_pad_template_get (&gst_pjnath_sink_sink_template));
+  #if GST_CHECK_VERSION (1,0,0)
+  gst_element_class_set_metadata (gstelement_class,
+  #else
+  gst_element_class_set_details_simple (gstelement_class,
+  #endif
+    "ICE sink",
+    "Sink",
+    "Interactive UDP connectivity establishment",
+    "Dafydd Harries <dafydd.harries@collabora.co.uk>");
+
+
+  g_object_class_install_property (gobject_class, PROP_INSTANCE,
+      g_param_spec_pointer (
+         "icest",
+         "ice instance sink",
+         "The pjnathAgent this source is bound to",
+         G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class, PROP_ADDRESS,
+     g_param_spec_pointer (
+         "address",
+         "address sink",
+         "The pjnathAgent this source is bound to",
+         G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class, PROP_POOL,
+     g_param_spec_pointer (
+         "pool",
+         "pool",
+         "The pjnathAgent this source is bound to",
+         G_PARAM_READWRITE));
+
+  g_object_class_install_property (gobject_class, PROP_COMPONENT,
+      g_param_spec_uint (
+         "component",
+         "Component ID sink",
+         "The ID of the component to read from",
+         0,
+         G_MAXUINT,
+         0,
+         G_PARAM_READWRITE));
+}
+
+static void
+gst_pjnath_sink_init (GstPjnathSink *sink)
+{
+}
+
+typedef struct _MyCustomData MyCustomData ;
+static struct _MyCustomData {
+	GstPjnathSink *pjnathsink;
+	GstBuffer *buffer;
+};
+
+/* Utility to display error messages */
+static void icedemo_perror(const char *title, pj_status_t status)
+{
+    char errmsg[PJ_ERR_MSG_SIZE];
+
+    pj_strerror(status, errmsg, sizeof(errmsg));
+    PJ_LOG(1,("TAG", "%s: %s", title, errmsg));
+}
+
+static void* sender_func (MyCustomData *data)
+{
+	GstPjnathSink *pjnathsink = data->pjnathsink;
+	GstBuffer *buffer = data->buffer;
+	pj_status_t status;
+
+	#if GST_CHECK_VERSION (1,0,0)
+	GstMapInfo info;
+
+	gst_buffer_map (buffer, &info, GST_MAP_READ);
+
+	if (status = pj_ice_strans_sendto (pjnathsink->icest, pjnathsink->comp_id,
+		(gchar *) info.data, info.size, &pjnathsink->def_addr,
+		pj_sockaddr_get_len(pjnathsink->def_addr)) != PJ_SUCCESS)
+	{
+		printf ("Send 1 failed\n");	
+	}
+
+	gst_buffer_unmap (buffer, &info);
+	#else
+	status = pj_ice_strans_sendto (pjnathsink->icest, pjnathsink->comp_id,
+		(gchar *) GST_BUFFER_DATA (buffer), GST_BUFFER_SIZE (buffer), 
+		&pjnathsink->def_addr,
+		pj_sockaddr_get_len(pjnathsink->def_addr));
+
+	/*status = pj_ice_strans_sendto (pjnathsink->icest, pjnathsink->comp_id,
+		"hello the world!", strlen("hello the world!"), 
+		&pjnathsink->def_addr,
+		pj_sockaddr_get_len(pjnathsink->def_addr));*/
+
+	printf ("sieze  = %d\n", GST_BUFFER_SIZE (buffer));
+	
+	if (status != PJ_SUCCESS) {
+    		icedemo_perror("Error sending data", status);
+	}
+	else {
+		PJ_LOG(3,("TAG", "Data sent"));
+	}
+	#endif
+}
+
+static GstFlowReturn
+gst_pjnath_sink_render (GstBaseSink *basesink, GstBuffer *buffer)
+{
+	pj_thread_t *sender_thread;
+	pj_status_t rc;
+	MyCustomData *data = (MyCustomData *)malloc(sizeof(MyCustomData));
+
+	GstPjnathSink *pjnathsink = GST_PJNATH_SINK (basesink);
+	data->pjnathsink = pjnathsink;
+	data->buffer = buffer;
+	//printf ("data->pjnathsink = %d\n", data->pjnathsink);
+	//printf ("data->buffer = %d\n", data->buffer);
+
+	rc = pj_thread_create (pjnathsink->pool,
+		"Send data to remote",
+		(pj_thread_proc*)&sender_func,
+		(void *) data,
+		PJ_THREAD_DEFAULT_STACK_SIZE,
+		0,
+		&sender_thread
+	); 	
+	
+	if (rc != PJ_SUCCESS) 
+	{
+		printf ("...error: unable to create thread");
+    	}
+	
+	/*#if GST_CHECK_VERSION (1,0,0)
+	  GstMapInfo info;
+
+	  gst_buffer_map (buffer, &info, GST_MAP_READ);
+
+	  /*pj_ice_strans_sendto (pjnathsink->icest, pjnathsink->comp_id,
+		(gchar *) info.data, info.size, &pjnathsink->def_addr,
+		pj_sockaddr_get_len(pjnathsink->def_addr));
+	*/
+	/*  gst_buffer_unmap (buffer, &info);
+	#else
+	  pj_ice_strans_sendto (pjnathsink->icest, pjnathsink->comp_id,
+		 (gchar *) GST_BUFFER_DATA (buffer), GST_BUFFER_SIZE (buffer), 
+		&pjnathsink->def_addr,
+		pj_sockaddr_get_len(pjnathsink->def_addr));
+	#endif
+	*/
+	pj_thread_join(sender_thread);
+ 	return GST_FLOW_OK;
+}
+
+
+static void
+gst_pjnath_sink_dispose (GObject *object)
+{
+  GstPjnathSink *sink = GST_PJNATH_SINK (object);
+
+  if (sink->icest)
+    g_object_unref (sink->icest);
+  sink->icest = NULL;
+
+  G_OBJECT_CLASS (gst_pjnath_sink_parent_class)->dispose (object);
+}
+
+static void
+gst_pjnath_sink_set_property (
+  GObject *object,
+  guint prop_id,
+  const GValue *value,
+  GParamSpec *pspec)
+{
+  GstPjnathSink *sink = GST_PJNATH_SINK (object);
+
+  switch (prop_id)
+    {
+    case PROP_INSTANCE:
+      if (sink->icest)
+        GST_ERROR_OBJECT (object,
+            "Changing the agent on a pjnath sink not allowed");
+      else
+        sink->icest = g_value_get_pointer (value);
+	printf ("sink->icest = %d\n", sink->icest);
+      break;
+
+    case PROP_ADDRESS:
+	sink->def_addr = g_value_get_pointer (value);
+   	printf ("sink->def_addr = %d\n", sink->def_addr);
+      break;
+
+    case PROP_COMPONENT:
+	sink->comp_id = g_value_get_uint (value);
+	printf ("sink->comp_id = %d\n", sink->comp_id);
+      break;
+
+    case PROP_POOL:
+	sink->pool = g_value_get_pointer (value);
+	printf ("sink->comp_id = %d\n", sink->pool);
+      break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static void
+gst_pjnath_sink_get_property (
+  GObject *object,
+  guint prop_id,
+  GValue *value,
+  GParamSpec *pspec)
+{
+  GstPjnathSink *sink = GST_PJNATH_SINK (object);
+
+  switch (prop_id)
+    {
+    case PROP_INSTANCE:
+      g_value_set_pointer (value, sink->icest);
+	printf("get icest\n");
+      break;
+
+    case PROP_ADDRESS:
+      g_value_set_pointer (value, sink->def_addr);
+      printf ("get address");
+      break;
+
+    case PROP_COMPONENT:
+	g_value_set_uint (value, sink->comp_id);
+	printf ("get component id");
+ 	break;
+
+    case PROP_POOL:      
+  	g_value_set_pointer (value, sink->pool);
+	printf ("get pool");
+	break;
+
+    default:
+      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      break;
+    }
+}
+
+static GstStateChangeReturn
+gst_pjnath_sink_change_state (GstElement * element, GstStateChange transition)
+{
+  GstPjnathSink *sink;
+  GstStateChangeReturn ret;
+
+  sink = GST_PJNATH_SINK (element);
+
+  switch (transition) {
+    case GST_STATE_CHANGE_NULL_TO_READY:
+      if (sink->icest == NULL)
+        {
+          GST_ERROR_OBJECT (element,
+              "Trying to start pjnath sink without an agent set");
+          return GST_STATE_CHANGE_FAILURE;
+        }
+      break;
+    case GST_STATE_CHANGE_READY_TO_PAUSED:
+    case GST_STATE_CHANGE_PAUSED_TO_PLAYING:
+    case GST_STATE_CHANGE_PLAYING_TO_PAUSED:
+    case GST_STATE_CHANGE_PAUSED_TO_READY:
+    case GST_STATE_CHANGE_READY_TO_NULL:
+    default:
+      break;
+  }
+
+  ret = GST_ELEMENT_CLASS (gst_pjnath_sink_parent_class)->change_state (element,
+      transition);
+
+  return ret;
+}

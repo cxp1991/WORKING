@@ -1,0 +1,140 @@
+#include "stream.h"
+#include "../Login/login.h"
+#include "gstreamer_utils.h"
+
+void*  _video_receive_main(CustomData *data)
+{
+	// Create the nice agent
+	data->agent = libnice_create_NiceAgent_with_gstreamer ( video_receive_gathering_done,
+															data->context);
+	// Create a new stream with one component
+	data->stream_id = libnice_create_stream_id (data->agent);
+
+	// Init Gstreamer
+	_video_receive_init_gstreamer (data->agent,
+								   data->stream_id,
+								   data);
+
+	// Start gathering candidates
+	libnice_start_gather_candidate (data->agent,
+									data->stream_id,
+									data->context);
+
+	__android_log_print (ANDROID_LOG_INFO, "tutorial-3", "[video] agent = %d", data->agent);
+}
+
+void  _video_receive_init_gstreamer (NiceAgent *magent, guint streamID, CustomData *data)
+{
+	GstElement 	*pipeline, *display_bin, *nicesrc, *tee,
+				*capsfilter, *gstrtpjitterbuffer,
+				*rtph264depay, *h264parse, *ffdec_h264,
+				*video_view, *display_queue;
+	GstBus *bus;
+	GstMessage *msg;
+	GstStateChangeReturn ret;
+	GSource *bus_source;
+	GstPadTemplate *tee_src_pad_template;
+	GstPad *tee_q1_pad;
+	GstPad *q1_pad;
+
+	// Initialize GStreamer
+  	gst_init (NULL, NULL);
+
+  	// Register gstreamer plugin libnice
+	gst_plugin_register_static (
+		GST_VERSION_MAJOR,
+		GST_VERSION_MINOR,
+		"nice",
+		"Interactive UDP connectivity establishment",
+		plugin_init, "0.1.4", "LGPL", "libnice",
+		"http://telepathy.freedesktop.org/wiki/", "");
+
+	// Create elements
+	nicesrc = gst_element_factory_make ("nicesrc", NULL);
+	tee = gst_element_factory_make ("tee", "tee");
+	display_queue = gst_element_factory_make ("queue", NULL);
+	capsfilter = gst_element_factory_make ("capsfilter", NULL);
+	gstrtpjitterbuffer = gst_element_factory_make ("gstrtpjitterbuffer", NULL);
+	rtph264depay = gst_element_factory_make ("rtph264depay", NULL);
+	h264parse = gst_element_factory_make ("h264parse", NULL);
+	ffdec_h264 = gst_element_factory_make ("ffdec_h264", NULL);
+	video_view = gst_element_factory_make ("autovideosink", NULL);
+
+	// Set element's properties
+	g_object_set (nicesrc, "agent", magent, NULL);
+	g_object_set (nicesrc, "stream", streamID, NULL);
+	g_object_set (nicesrc, "component", 1, NULL);
+	g_object_set (capsfilter, "caps", gst_caps_from_string("application/x-rtp, payload=(int)96"), NULL);
+	g_object_set (video_view, "sync", FALSE, NULL);
+
+	pipeline = gst_pipeline_new("Receive Video Pipeline");
+	display_bin = gst_bin_new("Display Bin");
+
+	if (!pipeline || !display_bin || ! nicesrc || !tee || !display_queue ||
+			!capsfilter || !gstrtpjitterbuffer || !rtph264depay||
+			!video_view || !ffdec_h264 || !h264parse)
+	{
+		g_printerr ("Not all elements could be created.\n");
+		return;
+	}
+
+	gst_bin_add_many(GST_BIN(display_bin), display_queue, capsfilter,
+				 rtph264depay, h264parse, ffdec_h264, video_view, NULL);
+	gst_bin_add_many (GST_BIN (pipeline), nicesrc, tee, display_bin, NULL);
+
+	if (gst_element_link_many (nicesrc, tee, NULL) != TRUE ||
+		gst_element_link_many(display_queue, capsfilter, rtph264depay,
+				h264parse, ffdec_h264, video_view, NULL) != TRUE)
+	{
+		g_printerr ("Elements could not be linked.[01]\n");
+		gst_object_unref (pipeline);
+		return;
+	}
+
+	/* Manually link the Tee, which has "Request" pads */
+	if ( !(tee_src_pad_template = gst_element_class_get_pad_template
+									(GST_ELEMENT_GET_CLASS (tee), "src%d")))
+	{
+		gst_object_unref (pipeline);
+		g_critical ("Unable to get pad template");
+		return;
+	}
+
+	/* Obtaining request pads for the tee elements*/
+	tee_q1_pad = gst_element_request_pad (tee, tee_src_pad_template, NULL, NULL);
+	q1_pad = gst_element_get_static_pad (display_queue, "sink");
+
+	/* Link the tee to the queue 1 */
+	if (gst_pad_link (tee_q1_pad, q1_pad) != GST_PAD_LINK_OK )
+	{
+		g_critical ("Tee for q1 could not be linked.\n");
+		gst_object_unref (pipeline);
+		return;
+	}
+
+	gst_object_unref (q1_pad);
+
+	data->pipeline = pipeline;
+	gst_element_set_state(data->pipeline, GST_STATE_READY);
+	
+	data->video_sink = gst_bin_get_by_interface(GST_BIN(data->pipeline), GST_TYPE_X_OVERLAY);
+	if (!data->video_sink)
+	{
+		GST_ERROR ("Could not retrieve video sink");
+		return;
+	}
+
+	//Instruct the bus to emit signals for each received message, and connect to the interesting signals
+	bus = gst_element_get_bus (data->pipeline);
+	bus_source = gst_bus_create_watch (bus);
+	g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
+	g_source_attach (bus_source, data->context);
+	g_source_unref (bus_source);
+	g_signal_connect (G_OBJECT (bus), "message::error", (GCallback)on_error, data);
+	g_signal_connect (G_OBJECT (bus), "message::state-changed", (GCallback)on_state_changed, data);
+	gst_object_unref (bus);
+
+	//Create a GLib Main Loop and set it to run
+	GST_DEBUG ("Entering main loop... (CustomData:%p)", data);
+	check_initialization_complete (data);
+}

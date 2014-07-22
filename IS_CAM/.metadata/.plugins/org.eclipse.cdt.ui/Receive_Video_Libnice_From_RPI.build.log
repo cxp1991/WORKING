@@ -1,0 +1,14 @@
+
+**** Build of configuration Default for project Receive_Video_Libnice_From_RPI ****
+
+/home/cxphong/adt-bundle-linux-x86-20131030/ndk/ndk-build all 
+Android NDK: WARNING: APP_PLATFORM android-19 is larger than android:minSdkVersion 13 in ./AndroidManifest.xml    
+GStreamer      : [GEN] => gst-build/gstreamer_android.c
+GStreamer      : [COMPILE] => gst-build/gstreamer_android.c
+GStreamer      : [LINK] => gst-build/libgstreamer_android.so
+[armeabi] Prebuilt       : libgstreamer_android.so <= gst-build/
+[armeabi] SharedLibrary  : libMain.so
+[armeabi] Install        : libMain.so => libs/armeabi/libMain.so
+[armeabi] Install        : libgstreamer_android.so => libs/armeabi/libgstreamer_android.so
+
+**** Build Finished ****

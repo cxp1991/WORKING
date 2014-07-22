@@ -1,0 +1,26 @@
+!SESSION 2014-07-19 10:41:24.723 -----------------------------------------------
+eclipse.buildId=v22.3.0-887826
+java.version=1.7.0_07
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product
+Command-line arguments:  -os linux -ws gtk -arch x86 -product com.android.ide.eclipse.adt.package.product
+
+This is a continuation of log file /home/cxphong/GITHUB/IS_CAM/.metadata/.bak_0.log
+Created Time: 2014-07-19 15:38:29.217
+!SESSION 2014-07-19 10:41:24.723 -----------------------------------------------
+eclipse.buildId=v22.3.0-887826
+java.version=1.7.0_07
+java.vendor=Oracle Corporation
+BootLoader constants: OS=linux, ARCH=x86, WS=gtk, NL=en_US
+Framework arguments:  -product com.android.ide.eclipse.adt.package.product
+Command-line arguments:  -os linux -ws gtk -arch x86 -product com.android.ide.eclipse.adt.package.product
+
+!ENTRY org.eclipse.cdt.core 1 0 2014-07-19 15:38:29.217
+!MESSAGE Indexed 'libnice-0.1.7' (76 sources, 59 headers) in 1.71 sec: 8,887 declarations; 42,628 references; 330 unresolved inclusions; 180 syntax errors; 7,480 unresolved names (12.68%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2014-07-19 16:17:26.433
+!MESSAGE Indexed 'nice-0.0.2' (47 sources, 45 headers) in 0.55 sec: 4,336 declarations; 18,800 references; 234 unresolved inclusions; 46 syntax errors; 3,540 unresolved names (13.27%)
+
+!ENTRY org.eclipse.cdt.core 1 0 2014-07-19 16:18:48.353
+!MESSAGE Indexed 'libnice-0.1.7' (76 sources, 59 headers) in 1.11 sec: 8,887 declarations; 42,628 references; 330 unresolved inclusions; 180 syntax errors; 7,480 unresolved names (12.68%)

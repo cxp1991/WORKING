@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Libnice Streaming</string>
+    <string name="button_play">Play</string>
+    <string name="button_stop">Stop</string>
+    <string name="SignOut">SignOut</string>
+    <string name="Register"><u>Register for new user</u></string>
+    <string name="Temperature">Temperature:</string>
+    <string name="Location">Location:</string>
+    <string name="OnlineFrom">Online From :</string>
+    
+</resources>

@@ -1,0 +1,46 @@
+2 servo
+piezo
+pump
+2 motion sensor
+cam bien nhiet ds1721
+heater
+
+protocol
+ 2		4	
+|A55A|	Data	
+
+//////////////////////
+//   format Data    //
+//////////////////////
+
+- 0x01 	on/off piezo. rpi -> stm
+	2st	0x01	off
+		0x02	on
+	3rd 0xff
+	4th	0xff
+- 0x02 	on/off pump. rpi -> stm
+	2nd	0x01	off
+		0x02	on
+	3rd 0xff
+	4th	0xff
+- 0x03 	servo. rpi -> stm
+	2st	0x01	servo 1
+		0x02	servo 2
+	3rd	angle
+	4th angle
+- 0x04 	motion_sensor. stm -> rpi
+	2nd	0x01	sensor 1
+		0x02	sensor 2
+	3rd	0x01	no motion
+		0x02	motion	
+	4th	0xff
+- 0x05	ds1721.	stm -> rpi, rpi -> stm
+	1st	temperature
+	2nd	0xff
+	3rd 0xff
+	4th	0xff
+- 0x06	heater	rpi -> stm
+	2nd	0x01	off
+		0x02	on
+	3rd 0xff
+	4th	0xff

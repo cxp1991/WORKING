@@ -1,0 +1,136 @@
+
+**** Clean-only build of configuration Default for project libnice-0.1.7 ****
+
+make clean 
+Making clean in stun
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/stun'
+Making clean in .
+make[2]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/stun'
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+test -z "libstun.la" || rm -f libstun.la
+rm -f ./so_locations
+rm -f *.o
+rm -f *.lo
+make[2]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/stun'
+Making clean in tools
+make[2]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/stun/tools'
+ rm -f stunbdc stund
+ rm -f stund
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+rm -f *.o
+rm -f *.lo
+make[2]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/stun/tools'
+Making clean in tests
+make[2]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/stun/tests'
+ rm -f test-parse test-format test-bind test-conncheck test-hmac
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+rm -f *.o
+test -z "test-parse.log test-format.log test-bind.log test-conncheck.log test-hmac.log" || rm -f test-parse.log test-format.log test-bind.log test-conncheck.log test-hmac.log
+test -z "test-parse.trs test-format.trs test-bind.trs test-conncheck.trs test-hmac.trs" || rm -f test-parse.trs test-format.trs test-bind.trs test-conncheck.trs test-hmac.trs
+test -z "test-suite.log" || rm -f test-suite.log
+rm -f *.lo
+make[2]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/stun/tests'
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/stun'
+Making clean in socket
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/socket'
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+test -z "libsocket.la" || rm -f libsocket.la
+rm -f ./so_locations
+rm -f *.o
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/socket'
+Making clean in random
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/random'
+ rm -f test
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+test -z "libnice-random.la" || rm -f libnice-random.la
+rm -f ./so_locations
+rm -f *.o
+test -z "test.log" || rm -f test.log
+test -z "test.trs" || rm -f test.trs
+test -z "test-suite.log" || rm -f test-suite.log
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/random'
+Making clean in agent
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/agent'
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+test -z "libagent.la" || rm -f libagent.la
+rm -f ./so_locations
+rm -f *.o
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/agent'
+Making clean in nice
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/nice'
+test -z "*.gcno *.gcda libnice.symbols libnice-symbols-test.c libnice-symbols-test.o" || rm -f *.gcno *.gcda libnice.symbols libnice-symbols-test.c libnice-symbols-test.o
+test -z "libnice.la" || rm -f libnice.la
+rm -f ./so_locations
+rm -rf .libs _libs
+rm -f *.o
+test -z "test-symbols.sh.log" || rm -f test-symbols.sh.log
+test -z "test-symbols.sh.trs" || rm -f test-symbols.sh.trs
+test -z "test-suite.log" || rm -f test-suite.log
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/nice'
+Making clean in gst
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/gst'
+test -z "libgstnice010.la" || rm -f libgstnice010.la
+rm -f ./so_locations
+test -z "libgstnice.la" || rm -f libgstnice.la
+rm -f ./so_locations
+rm -rf .libs _libs
+rm -f *.o
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/gst'
+Making clean in docs
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/docs'
+Making clean in reference
+make[2]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/docs/reference'
+Making clean in libnice
+make[3]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/docs/reference/libnice'
+test -z "libnice.args libnice.hierarchy libnice.interfaces libnice.prerequisites libnice.signals libnice-undocumented.txt libnice-undeclared.txt libnice-unused.txt setup-build.stamp scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp pdf-build.stamp tmpl.stamp sgml.stamp html.stamp pdf.stamp" || rm -f libnice.args libnice.hierarchy libnice.interfaces libnice.prerequisites libnice.signals libnice-undocumented.txt libnice-undeclared.txt libnice-unused.txt setup-build.stamp scan-build.stamp tmpl-build.stamp sgml-build.stamp html-build.stamp pdf-build.stamp tmpl.stamp sgml.stamp html.stamp pdf.stamp
+rm -rf .libs _libs
+rm -f *.lo
+make[3]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/docs/reference/libnice'
+make[3]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/docs/reference'
+rm -rf .libs _libs
+rm -f *.lo
+make[3]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/docs/reference'
+make[2]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/docs/reference'
+make[2]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/docs'
+rm -rf .libs _libs
+rm -f *.lo
+make[2]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/docs'
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/docs'
+Making clean in tests
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/tests'
+ rm -f test-pseudotcp test-pseudotcp-fuzzy test-bsd test test-address test-add-remove-stream test-build-io-stream test-io-stream-thread test-io-stream-closing-write test-io-stream-closing-read test-io-stream-cancelling test-io-stream-pollable test-send-recv test-priority test-mainloop test-fullmode test-restart test-fallback test-thread test-dribble test-new-dribble
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+rm -f *.o
+test -z "test-pseudotcp.log test-pseudotcp-fuzzy.log test-bsd.log test.log test-address.log test-add-remove-stream.log test-build-io-stream.log test-io-stream-thread.log test-io-stream-closing-write.log test-io-stream-closing-read.log test-io-stream-cancelling.log test-io-stream-pollable.log test-send-recv.log test-priority.log test-mainloop.log test-fullmode.log test-restart.log test-fallback.log test-thread.log test-dribble.log test-new-dribble.log check-test-fullmode-with-stun.sh.log test-pseudotcp-random.sh.log" || rm -f test-pseudotcp.log test-pseudotcp-fuzzy.log test-bsd.log test.log test-address.log test-add-remove-stream.log test-build-io-stream.log test-io-stream-thread.log test-io-stream-closing-write.log test-io-stream-closing-read.log test-io-stream-cancelling.log test-io-stream-pollable.log test-send-recv.log test-priority.log test-mainloop.log test-fullmode.log test-restart.log test-fallback.log test-thread.log test-dribble.log test-new-dribble.log check-test-fullmode-with-stun.sh.log test-pseudotcp-random.sh.log
+test -z "test-pseudotcp.trs test-pseudotcp-fuzzy.trs test-bsd.trs test.trs test-address.trs test-add-remove-stream.trs test-build-io-stream.trs test-io-stream-thread.trs test-io-stream-closing-write.trs test-io-stream-closing-read.trs test-io-stream-cancelling.trs test-io-stream-pollable.trs test-send-recv.trs test-priority.trs test-mainloop.trs test-fullmode.trs test-restart.trs test-fallback.trs test-thread.trs test-dribble.trs test-new-dribble.trs check-test-fullmode-with-stun.sh.trs test-pseudotcp-random.sh.trs" || rm -f test-pseudotcp.trs test-pseudotcp-fuzzy.trs test-bsd.trs test.trs test-address.trs test-add-remove-stream.trs test-build-io-stream.trs test-io-stream-thread.trs test-io-stream-closing-write.trs test-io-stream-closing-read.trs test-io-stream-cancelling.trs test-io-stream-pollable.trs test-send-recv.trs test-priority.trs test-mainloop.trs test-fullmode.trs test-restart.trs test-fallback.trs test-thread.trs test-dribble.trs test-new-dribble.trs check-test-fullmode-with-stun.sh.trs test-pseudotcp-random.sh.trs
+test -z "test-suite.log" || rm -f test-suite.log
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/tests'
+Making clean in examples
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7/examples'
+ rm -f simple-example threaded-example sdp-example
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+rm -f *.o
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7/examples'
+make[1]: Entering directory `/home/cxphong/Desktop/libnice-0.1.7'
+test -z "*.gcno *.gcda" || rm -f *.gcno *.gcda
+rm -rf .libs _libs
+rm -rf doc
+rm -f *.lo
+make[1]: Leaving directory `/home/cxphong/Desktop/libnice-0.1.7'
+
+**** Build Finished ****

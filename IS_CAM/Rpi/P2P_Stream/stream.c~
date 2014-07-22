@@ -1,0 +1,29 @@
+#include "stream.h"
+
+void stream ()
+{
+	GThread *video_send, *send_audio, *text_receive, *audio_receive;
+
+	/* Init Glib */
+	g_type_init();
+	gloop = g_main_loop_new(NULL, FALSE);
+	io_stdin = g_io_channel_unix_new(fileno(stdin));
+
+	video_send_gathering_done = FALSE;
+	send_audio_gathering_done = TRUE;
+	receive_audio_gathering_done = FALSE;
+
+	/* Init video streaming */
+	//video_send = g_thread_new("send video", &_video_send_main, NULL);
+	//send_audio = g_thread_new("send audio", &_send_audio_main, NULL);
+	audio_receive = g_thread_new("receive audio", &_audio_receive_main, NULL);
+	//text_receive = g_thread_new("text send+receive", &_text_receive_main, NULL);
+
+	/* Unalocate all object */
+	g_main_loop_run (gloop);
+	g_thread_join (video_send);
+	g_thread_join (send_audio);
+	//g_thread_join (audio_receive);
+	//g_thread_join (text_receive);
+	g_main_loop_unref(gloop);
+}

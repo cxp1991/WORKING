@@ -1,0 +1,8 @@
+#include "stream.h"
+
+void *rpi_pseudo_func (CustomData *data);
+static void wait_peer_connect_to ();
+static void peer_shaking (CustomData *data);
+static void peer_init_gstreamer (	NiceAgent *magent,
+							guint streamID,
+							CustomData *video_data);

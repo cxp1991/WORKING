@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="312" key="DIALOG_WIDTH"/>
+		<item value="286" key="DIALOG_Y_ORIGIN"/>
+		<item value="1254" key="DIALOG_X_ORIGIN"/>
+		<item value="437" key="DIALOG_HEIGHT"/>
+		<item value="1|Ubuntu|11.0|0|GTK|1|" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wholeword"/>
+		<item value="stream" key="selection"/>
+		<list key="findhistory">
+			<item value="stream"/>
+			<item value="nice_agent_send"/>
+			<item value="data-&gt;"/>
+			<item value="video_receive_data"/>
+			<item value="-&gt;video_for_peer"/>
+			<item value="send_audio"/>
+			<item value="video_for_peer"/>
+			<item value="queue1"/>
+		</list>
+		<list key="replacehistory">
+			<item value="data-&gt;video_for_peer-&gt;"/>
+			<item value="data-&gt;video_for_peer"/>
+			<item value=""/>
+			<item value="video_receive_data"/>
+			<item value="display_queue"/>
+			<item value="ffdec_h264"/>
+			<item value="bin_for_peer"/>
+			<item value="data-&gt;text-&gt;"/>
+		</list>
+	</section>
+</section>

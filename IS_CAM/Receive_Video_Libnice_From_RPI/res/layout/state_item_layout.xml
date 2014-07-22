@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#E6E6E6" >
+ 
+    <LinearLayout 
+        android:id="@+id/ln01"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical" 
+        android:layout_marginLeft="25dp" >
+        
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="@string/Temperature"
+        android:padding="5dp" />
+            
+    	<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="@string/Location"
+        android:padding="5dp" />
+        
+    	<TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="@string/OnlineFrom"
+        android:padding="5dp" />
+        
+    </LinearLayout>
+    
+     <LinearLayout 
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_toRightOf="@+id/ln01"
+        android:layout_marginLeft="20dp" >
+        
+        <TextView
+        android:id="@+id/tv01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="@string/Temperature"
+        android:padding="5dp" />
+            
+    	<TextView
+    	android:id="@+id/tv02"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="@string/Location"
+        android:padding="5dp" />
+        
+    	<TextView
+    	android:id="@+id/tv03"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="17sp"
+        android:text="@string/OnlineFrom"
+        android:padding="5dp" />
+        
+    </LinearLayout>
+ 
+</RelativeLayout>

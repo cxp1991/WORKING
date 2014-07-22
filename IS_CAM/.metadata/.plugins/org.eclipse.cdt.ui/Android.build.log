@@ -1,0 +1,11 @@
+
+**** Clean-only build of configuration Default for project Android ****
+
+/home/cxphong/adt-bundle-linux-x86-20131030/ndk/ndk-build clean 
+Android NDK: WARNING: APP_PLATFORM android-19 is larger than android:minSdkVersion 13 in ./AndroidManifest.xml    
+[armeabi] Clean          : Main [armeabi]
+[armeabi] Clean          : _nice [armeabi]
+[armeabi] Clean          : gstreamer_android [armeabi]
+[armeabi] Clean          : stdc++ [armeabi]
+
+**** Build Finished ****

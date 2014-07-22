@@ -1,0 +1,3 @@
+INDEX VERSION 1.126+/home/cxphong/GITHUB/IS_CAM/.metadata/.plugins/org.eclipse.jdt.core
+1886675407.index
+3836189997.index

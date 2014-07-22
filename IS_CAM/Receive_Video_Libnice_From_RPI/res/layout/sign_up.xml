@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffffff" 
+    android:id="@+id/signup_layout">
+
+            <LinearLayout 
+	        	android:layout_width="match_parent"
+	        	android:layout_height="wrap_content"
+	        	android:orientation="vertical"
+	        	android:focusable="true"
+	        	android:focusableInTouchMode="true"
+	        	android:padding="10dp" 
+	        	android:layout_centerInParent="true" >
+ 				
+ 				<TextView 
+		         	android:layout_width="match_parent"
+		         	android:layout_height="wrap_content"
+		          	android:textColor="#3D5266"
+		          	android:textColorHighlight="#ff0000"
+		         	android:text="USERNAME"/>
+   
+			   <EditText
+			       android:id="@+id/editUserName"
+			       android:layout_width="match_parent"
+			       android:layout_height="50dp"
+			       android:inputType="text"
+			       android:paddingLeft="10dp"
+			       android:layout_marginTop="10dp"
+			       android:background="@drawable/edittext" >
+			   </EditText>
+
+			    <TextView 
+			          android:layout_width="match_parent"
+			          android:layout_height="wrap_content"
+			          android:text="PASSWORD"
+			          android:textColor="#3D5266"
+			          android:layout_marginTop="20dp"/>
+			    
+			   <EditText
+			       android:id="@+id/editPassword"
+			       android:layout_width="match_parent"
+			       android:layout_height="50dp"
+			       android:layout_marginTop="10dp"
+			       android:inputType="textPassword"
+			       android:paddingLeft="10dp"
+			       android:background="@drawable/edittext"/>
+			   
+	  			<TextView 
+			          android:layout_width="match_parent"
+			          android:layout_height="wrap_content"
+			          android:text="PASSWORD AGAIN"
+			          android:textColor="#3D5266"
+			          android:layout_marginTop="20dp"/>
+			   			    
+			   <EditText
+			       android:id="@+id/editPassword"
+			       android:layout_width="match_parent"
+			       android:layout_height="50dp"
+			       android:layout_marginTop="10dp"
+			       android:inputType="textPassword"
+			       android:paddingLeft="10dp"
+			       android:background="@drawable/edittext"/>
+			   
+			   
+			   <Button
+			       android:id="@+id/buttonLogin"
+			       android:layout_width="match_parent"
+			       android:layout_height="40dp"
+			       android:background="@drawable/button_state"
+			       android:onClick="login"
+			       android:text="SIGN UP"
+			       android:layout_marginTop="20dp"
+			       android:layout_gravity="center_horizontal"
+			       android:textColor="#3D5266"/>
+			
+            </LinearLayout>
+                 
+</RelativeLayout>
